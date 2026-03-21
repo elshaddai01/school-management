@@ -3,63 +3,65 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AcademicClass;
 use Illuminate\Http\Request;
 
 class ClassController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // List all classes
     public function index()
     {
-        //
+        $classes = AcademicClass::withCount('students')->get();
+        return view('admin.classes.index', compact('classes'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // Show create form
     public function create()
     {
-        //
+        return view('admin.classes.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Save new class
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name'    => 'required|string|max:60|unique:classes,name',
+            'level'   => 'required|string|max:40',
+            'section' => 'nullable|string|max:10',
+        ]);
+
+        AcademicClass::create($request->only('name', 'level', 'section'));
+
+        return redirect()->route('admin.classes.index')
+                         ->with('success', 'Class created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // Show edit form
+    public function edit(AcademicClass $class)
     {
-        //
+        return view('admin.classes.edit', compact('class'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    // Save edited class
+    public function update(Request $request, AcademicClass $class)
     {
-        //
+        $request->validate([
+            'name'    => 'required|string|max:60|unique:classes,name,' . $class->id,
+            'level'   => 'required|string|max:40',
+            'section' => 'nullable|string|max:10',
+        ]);
+
+        $class->update($request->only('name', 'level', 'section'));
+
+        return redirect()->route('admin.classes.index')
+                         ->with('success', 'Class updated successfully.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // Delete class
+    public function destroy(AcademicClass $class)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $class->delete();
+        return redirect()->route('admin.classes.index')
+                         ->with('success', 'Class deleted successfully.');
     }
 }

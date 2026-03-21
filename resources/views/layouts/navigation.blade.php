@@ -9,11 +9,15 @@
 
             @auth
                 @if(auth()->user()->role === 'admin')
-                    <a href="{{ route('admin.dashboard') }}"
-                       class="text-sm text-blue-200 hover:text-white">
-                        Dashboard
-                    </a>
-                @else
+    <a href="{{ route('admin.dashboard') }}"
+       class="text-sm text-blue-200 hover:text-white">Dashboard</a>
+    <a href="{{ route('admin.classes.index') }}"
+       class="text-sm text-blue-200 hover:text-white">Classes</a>
+    <a href="{{ route('admin.students.index') }}"
+       class="text-sm text-blue-200 hover:text-white">Students</a>
+    <a href="{{ route('admin.subjects.index') }}"
+       class="text-sm text-blue-200 hover:text-white">Subjects</a>
+@else
                     <a href="{{ route('teacher.dashboard') }}"
                        class="text-sm text-blue-200 hover:text-white">
                         Dashboard
